@@ -76,6 +76,28 @@ cmap = sn.diverging_palette(220, 10, as_cmap=True)
 
 sn.heatmap(corr, mask=mask, cmap=cmap, vmax=0.3, center=0, square=True, linewidths=0.5, cbar_kws={"shrink": 0.5})
 
+# Feature Engineering
+
+dataset["first_open"] = [parser.parse(row_data) for row_data in dataset["first_open"]]
+
+dataset["enrolled_date"] = [parser.parse(row_data) if isinstance(row_data, str) else row_data for row_data in dataset["enrolled_date"]]
+
+dataset["difference"] = (dataset.enrolled_date - dataset.first_open).astype('timedelta64[h]')
+
+plt.hist(dataset["difference"].dropna(), color='#3F5D7D')
+plt.title('Distribution of Time-Since-Enrolled')
+plt.show()
+
+
+plt.hist(dataset["difference"].dropna(), color='#3F5D7D', range=[0, 100])
+plt.title('Distribution of Time-Since-Enrolled')
+plt.show()
+
+
+dataset.loc[dataset.difference > 48, 'enrolled'] = 0
+
+dataset = dataset.drop(columns = ['difference', 'enrolled_date', 'first_open'])
+
 
 
 
