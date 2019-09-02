@@ -143,9 +143,11 @@ loan_screens = ["Loan", "Loan2", "Loan3", "Loan4"]
 dataset["LoansCount"] = dataset[loan_screens].sum(axis=1)
 dataset = dataset.drop(columns = loan_screens)
 
+# Save new dataset to csv
 
+dataset.to_csv("new_appdata10.csv", index=False)
 
-
+    
 
 
 
