@@ -29,10 +29,82 @@ test_identifier = X_test['user']
 X_test = X_test.drop(columns='user')
 
 
-from sklearn.preprocessing import StandardScalar
-sc_X = StandardScalar()
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
 X_train2 = pd.DataFrame(sc_X.fit_transform(X_train))
 X_test2 = pd.DataFrame(sc_X.transform(X_test))
+X_train2.columns = X_train.columns.values
+X_test2.columns = X_test.columns.values
+X_train2.index = X_train.index.values
+X_test2.index = X_test.index.values
+X_train = X_train2
+X_test = X_test2
+
+
+# Model Building
+
+from sklearn.linear_model import LogisticRegression 
+classifier = LogisticRegression(random_state=0, penalty='l1')
+classifier.fit(X_train, y_train)
+
+y_predict = classifier.predict(X_test)
+
+
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, precision_score, recall_score
+
+cm = confusion_matrix(y_test, y_predict)
+accuracy_score(y_test, y_predict)
+precision_score(y_test, y_predict)
+recall_score(y_test, y_predict)
+f1_score(y_test, y_predict)
+
+
+df_cm = pd.DataFrame(cm, index=(0, 1), columns=(0,1))
+plt.figure(figsize=(10,7))
+sn.set(font_scale=1.4)
+sn.heatmap(df_cm, annot=True, fmt='g')  
+print("Test Data Accuracy: %0.4f" % accuracy_score(y_test, y_predict))
+
+
+from sklearn.model_selection import cross_val_score
+
+accuracies = cross_val_score(estimator = classifier, X=X_train, y=y_train, cv=10)
+
+print("Logistic Accuracy: %0.3f (+/- %0.3f)" % (accuracies.mean(), accuracies.std() * 2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
