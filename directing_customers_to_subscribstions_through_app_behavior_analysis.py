@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import seaborn as sn
 from dateutil import parser
 
-dataset = pd.read_csv('data/appdata10/appdata10.csv')
+dataset = pd.read_csv('appdata10/appdata10.csv')
 
 ### EDA ###
 dataset.head()
@@ -97,6 +97,124 @@ plt.show()
 dataset.loc[dataset.difference > 48, 'enrolled'] = 0
 
 dataset = dataset.drop(columns = ['difference', 'enrolled_date', 'first_open'])
+
+
+# Formatting the screen_list Field 
+
+top_screens = pd.read_csv('appdata10/top_screens.csv').top_screens.values
+
+dataset["screen_list"] = dataset.screen_list.astype(str) + ','
+
+
+for sc in top_screens:
+    dataset[sc] = dataset.screen_list.str.contains(sc).astype(int)
+    dataset["screen_list"] = dataset.screen_list.str.replace(sc+",", "")
+
+
+
+dataset["Other"] = dataset.screen_list.str.count(",")
+
+
+dataset = dataset.drop(columns = ["screen_list"])
+
+
+# Funnels
+
+savings_screens = ["Saving1", "Saving2", "Saving2Amount", "Saving4", "Saving5","Saving6", "Saving7", "Saving8", "Saving9", "Saving10"]
+
+dataset["SavingsCount"] = dataset[savings_screens].sum(axis=1)
+dataset = dataset.drop(columns = savings_screens)
+
+
+cm_screens = ["Credit1", "Credit2", "Credit3", "Credit3Container", "Credit3Dashboard"]
+
+dataset["CMCount"] = dataset[cm_screens].sum(axis=1)
+dataset = dataset.drop(columns = cm_screens)
+
+
+cc_screens = ["CC1", "CC1Category", "CC3"]
+
+dataset["CCCount"] = dataset[cc_screens].sum(axis=1)
+dataset = dataset.drop(columns = cc_screens)
+
+
+loan_screens = ["Loan", "Loan2", "Loan3", "Loan4"]
+
+dataset["LoansCount"] = dataset[loan_screens].sum(axis=1)
+dataset = dataset.drop(columns = loan_screens)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
